@@ -1,0 +1,19 @@
+.panel-title {
+  margin-top: 8px;
+  font-weight: 700;
+  font-size: 1.75rem;
+}
+
+.list-group-item {
+  min-height: 75px;
+}
+
+.list-group-item-heading {
+  margin-top: 3rem;
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+img {
+  max-width: 50px;
+}
