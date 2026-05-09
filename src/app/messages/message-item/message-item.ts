@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { Message } from '../message.model';
 
 @Component({
   selector: 'cms-message-item',
@@ -6,4 +7,6 @@ import { Component } from '@angular/core';
   templateUrl: './message-item.html',
   styleUrl: './message-item.css',
 })
-export class MessageItem {}
+export class MessageItemComponent {
+  @Input() message!: Message;
+}
