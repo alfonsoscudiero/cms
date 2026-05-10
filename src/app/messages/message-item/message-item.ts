@@ -7,6 +7,6 @@ import { Message } from '../message.model';
   templateUrl: './message-item.html',
   styleUrl: './message-item.css',
 })
-export class MessageItemComponent {
+export class MessageItem {
   @Input() message!: Message;
 }
