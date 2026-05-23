@@ -9,16 +9,16 @@ import { MessageService } from '../message.service';
   styleUrl: './message-list.css',
 })
 
-export class MessageList {
+export class MessageList implements OnInit {
   messages: Message[] = [];
 
   constructor(private messageService: MessageService) {}
 
   ngOnInit() {
     this.messages = this.messageService.getMessages();
-  }
 
-  onAddMessage(message: Message) {
-    this.messages.push(message);
+    this.messageService.messageChangedEvent.subscribe((messages: Message[]) => {
+      this.messages = messages;
+    });
   }
 }
