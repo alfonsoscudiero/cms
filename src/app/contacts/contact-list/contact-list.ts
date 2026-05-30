@@ -9,13 +9,17 @@ import { ContactService } from '../contact.service';
 })
 
 export class ContactList implements OnInit {
-
   contacts: Contact[] = [];
 
   constructor(private contactService: ContactService) {}
 
   ngOnInit() {
     this.contacts = this.contactService.getContacts();
-  }
 
+    this.contactService.contactChangedEvent.subscribe(
+      (contacts: Contact[]) => {
+        this.contacts = contacts;
+      }
+    );
+  }
 }
