@@ -9,9 +9,4 @@ import { Component, signal } from '@angular/core';
 export class App {
   protected readonly title = signal('cms');
 
-  selectedFeature = 'documents';
-
-  switchView(selectedFeature: string) {
-    this.selectedFeature = selectedFeature;
-  }
 }
