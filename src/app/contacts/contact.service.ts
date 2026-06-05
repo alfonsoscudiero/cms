@@ -10,9 +10,11 @@ import { MOCKCONTACTS } from './MOCKCONTACTS';
 export class ContactService {
   contactListChangedEvent = new Subject<Contact[]>();
   contacts: Contact[] = [];
+  maxContactId: number;
 
   constructor() {
     this.contacts = MOCKCONTACTS;
+    this.maxContactId = this.getMaxId();
   }
 
   getContacts(): Contact[] {
@@ -27,6 +29,20 @@ export class ContactService {
     }
     return null;
   }
+
+  getMaxId(): number {
+    let maxId = 0;
+
+    for (const contact of this.contacts) {
+      const currentId = parseInt(contact.id);
+
+      if (currentId > maxId) {
+        maxId = currentId;
+      }
+  }
+
+  return maxId;
+}
 
   deleteContact(contact: Contact) {
     if (!contact) {
