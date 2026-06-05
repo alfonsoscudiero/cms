@@ -44,19 +44,39 @@ export class DocumentService {
     return maxId;
   }
 
-addDocument(newDocument: Document) {
-  if (!newDocument) {
-    return;
+  addDocument(newDocument: Document) {
+    if (!newDocument) {
+      return;
+    }
+
+    this.maxDocumentId++;
+    newDocument.id = this.maxDocumentId.toString();
+
+    this.documents.push(newDocument);
+
+    const documentsListClone = this.documents.slice();
+    this.documentListChangedEvent.next(documentsListClone);
   }
 
-  this.maxDocumentId++;
-  newDocument.id = this.maxDocumentId.toString();
+  updateDocument(originalDocument: Document, newDocument: Document) {
+    if (!originalDocument || !newDocument) {
+      return;
+    }
 
-  this.documents.push(newDocument);
+    const pos = this.documents.indexOf(originalDocument);
 
-  const documentsListClone = this.documents.slice();
-  this.documentListChangedEvent.next(documentsListClone);
-}
+    if (pos < 0) {
+      return;
+    }
+
+    newDocument.id = originalDocument.id;
+
+    this.documents[pos] = newDocument;
+
+    const documentsListClone = this.documents.slice();
+
+    this.documentListChangedEvent.next(documentsListClone);
+  }
 
   deleteDocument(document: Document) {
     if (!document) {
