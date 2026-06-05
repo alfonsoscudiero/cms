@@ -12,7 +12,7 @@ import { DocumentService } from '../document.service';
 
 export class DocumentList implements OnInit {
   documents: Document[] = [];
-  subscription: Subscription;
+  subscription!: Subscription;
 
   constructor(private documentService: DocumentService) {
     this.documents = this.documentService.getDocuments();
