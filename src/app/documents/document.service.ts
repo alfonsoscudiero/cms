@@ -90,6 +90,9 @@ export class DocumentService {
     }
 
     this.documents.splice(pos, 1);
-    this.documentListChangedEvent.next(this.documents.slice());
+
+    const documentsListClone = this.documents.slice();
+
+    this.documentListChangedEvent.next(documentsListClone);
   }
 }
