@@ -92,6 +92,10 @@ export class ContactService {
     }
 
     this.contacts.splice(pos, 1);
-    this.contactListChangedEvent.next(this.contacts.slice());  }
+
+    const contactsListClone = this.contacts.slice();
+
+    this.contactListChangedEvent.next(contactsListClone);
+  }
 
 }
