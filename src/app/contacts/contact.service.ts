@@ -41,8 +41,24 @@ export class ContactService {
       }
   }
 
-  return maxId;
-}
+    return maxId;
+  }
+
+  addContact(newContact: Contact) {
+    if (!newContact) {
+      return;
+    }
+
+    this.maxContactId++;
+
+    newContact.id = this.maxContactId.toString();
+
+    this.contacts.push(newContact);
+
+    const contactsListClone = this.contacts.slice();
+
+    this.contactListChangedEvent.next(contactsListClone);
+  }
 
   deleteContact(contact: Contact) {
     if (!contact) {
