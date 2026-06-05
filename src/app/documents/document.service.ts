@@ -10,9 +10,11 @@ import { MOCKDOCUMENTS } from './MOCKDOCUMENTS';
 export class DocumentService {
   documentListChangedEvent = new Subject<Document[]>();
   documents: Document[] = [];
+  maxDocumentId: number;
 
   constructor() {
     this.documents = MOCKDOCUMENTS;
+    this.maxDocumentId = this.getMaxId();
   }
 
   getDocuments(): Document[] {
@@ -26,6 +28,20 @@ export class DocumentService {
       }
     }
     return null;
+  }
+
+  getMaxId(): number {
+    let maxId = 0;
+
+    for (const document of this.documents) {
+      const currentId = parseInt(document.id);
+
+      if (currentId > maxId) {
+        maxId = currentId;
+      }
+    }
+
+    return maxId;
   }
 
   deleteDocument(document: Document) {
