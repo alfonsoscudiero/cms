@@ -9,7 +9,11 @@
             id="name"
             class="form-control required"
             size="120"
-            max="120">
+            max="120"
+            name="name"
+            [ngModel]="contact?.name"
+            required
+            #name="ngModel">
         </div>
       </div>
 
@@ -21,8 +25,19 @@
             id="email"
             class="form-control required"
             size="120"
-            max="255">
+            max="255"
+            name="email"
+            [ngModel]="contact?.email"
+            required
+            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"
+            #email="ngModel">
         </div>
+      </div>
+
+      <div
+        class="alert alert-danger"
+        *ngIf="email.touched && !email.valid">
+        Enter a valid Email address
       </div>
 
       <div class="row">
@@ -33,9 +48,18 @@
             id="phone"
             class="form-control invalid"
             size="150"
-            max="255">
-
+            max="255"
+            name="phone"
+            [ngModel]="contact?.phone"
+            pattern="\D*([2-9]\d{2})(\D*)([2-9]\d{2})(\D*)(\d{4})\D*"
+            #phone="ngModel">
         </div>
+      </div>
+
+      <div
+        class="alert alert-danger"
+        *ngIf="phone.touched && !phone.valid">
+        Enter a valid phone number
       </div>
 
       <div class="row">
@@ -48,6 +72,12 @@
             size="150"
             max="255">
         </div>
+      </div>
+
+      <div
+        class="alert alert-danger"
+        *ngIf="!name.valid || !email.valid">
+        The Name and Email fields are required.
       </div>
 
       <div class="row">
