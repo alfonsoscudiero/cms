@@ -12,6 +12,7 @@
 
   <span class="pull-right">
     <img
+      *ngIf="contact.imageUrl && contact.imageUrl.trim() !== ''"
       [src]="contact.imageUrl"
       alt="{{ contact.name }}"
       class="img-responsive"
