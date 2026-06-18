@@ -13,7 +13,7 @@ import { ContactService } from '../contact.service';
 export class ContactList implements OnInit {
   contacts: Contact[] = [];
   subscription!: Subscription;
-
+  term: string = '';
 
   constructor(private contactService: ContactService) {
     this.contacts = this.contactService.getContacts();
@@ -25,5 +25,9 @@ export class ContactList implements OnInit {
           this.contacts = contactsList;
         }
       );
+  }
+
+  search(value: string) {
+    this.term = value;
   }
 }
