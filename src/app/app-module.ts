@@ -1,5 +1,6 @@
 import { NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
 
 import { App } from './app';
 import { Header } from './header';
@@ -21,6 +22,7 @@ import { ContactEdit } from './contacts/contact-edit/contact-edit';
 import { FormsModule } from '@angular/forms';
 import { ContactsFilterPipe } from './contacts-filter-pipe';
 
+
 @NgModule({
   declarations: [
     App,
@@ -41,7 +43,12 @@ import { ContactsFilterPipe } from './contacts-filter-pipe';
     ContactEdit,
     ContactsFilterPipe,
   ],
-  imports: [BrowserModule, AppRoutingModule, FormsModule],
+  imports: [
+  BrowserModule,
+  FormsModule,
+  HttpClientModule,
+  AppRoutingModule
+  ],
   providers: [provideBrowserGlobalErrorListeners()],
   bootstrap: [App],
 })
