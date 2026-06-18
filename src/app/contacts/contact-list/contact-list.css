@@ -1,7 +1,26 @@
 .panel-title {
   margin-top: 8px;
+  margin-left: 15px;
   font-weight: 700;
   font-size: 1.75rem;
+}
+
+.title {
+  display: block;
+  margin-top: 8px;
+  margin-left: 15px;
+  font-weight: 700;
+  font-size: 1.75rem;
+}
+
+.input-group {
+  margin-left: 15px;
+  margin-top: 8px;
+}
+
+.panel-heading {
+  padding-top: 12px;
+  padding-bottom: 12px;
 }
 
 .list-group-item {
@@ -16,4 +35,9 @@
 
 img {
   max-width: 50px;
+}
+
+.pull-right.pad-left-right {
+  margin-top: 8px;
+  margin-right: 30px;
 }
