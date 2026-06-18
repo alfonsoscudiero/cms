@@ -27,7 +27,7 @@
   <div class="panel-body">
     <div class="list-group">
       <cms-contact-item
-        *ngFor="let contact of contacts"
+        *ngFor="let contact of contacts | contactsFilter: term"
         [contact]="contact">
       </cms-contact-item>
     </div>
