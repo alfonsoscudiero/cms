@@ -70,6 +70,24 @@ export class DocumentService {
     return maxId;
   }
 
+  storeDocuments() {
+    const documents = JSON.stringify(this.documents);
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+
+    this.http
+      .put(
+        'https://byui-wdd430-cms-default-rtdb.firebaseio.com/documents.json',
+        documents,
+        { headers: headers }
+      )
+      .subscribe(() => {
+        this.documentListChangedEvent.next(this.documents.slice());
+      });
+  }
+
   addDocument(newDocument: Document) {
     if (!newDocument) {
       return;
@@ -80,8 +98,7 @@ export class DocumentService {
 
     this.documents.push(newDocument);
 
-    const documentsListClone = this.documents.slice();
-    this.documentListChangedEvent.next(documentsListClone);
+    this.storeDocuments();
   }
 
   updateDocument(originalDocument: Document, newDocument: Document) {
@@ -99,9 +116,7 @@ export class DocumentService {
 
     this.documents[pos] = newDocument;
 
-    const documentsListClone = this.documents.slice();
-
-    this.documentListChangedEvent.next(documentsListClone);
+    this.storeDocuments();
   }
 
   deleteDocument(document: Document) {
@@ -117,8 +132,6 @@ export class DocumentService {
 
     this.documents.splice(pos, 1);
 
-    const documentsListClone = this.documents.slice();
-
-    this.documentListChangedEvent.next(documentsListClone);
+    this.storeDocuments();
   }
 }
