@@ -55,7 +55,24 @@ export class ContactEdit {
   }
 
   onSubmit(form: NgForm) {
-    console.log(form.value);
+    const value = form.value;
+
+    const newContact = new Contact(
+      '',
+      value.name,
+      value.email,
+      value.phone,
+      value.imageUrl,
+      this.groupContacts
+    );
+
+    if (this.editMode && this.originalContact) {
+      this.contactService.updateContact(this.originalContact, newContact);
+    } else {
+      this.contactService.addContact(newContact);
+    }
+
+    this.router.navigate(['/contacts']);
   }  
 
   onCancel() {
