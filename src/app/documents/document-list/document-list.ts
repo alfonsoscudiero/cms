@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Document } from '../document.model';
 import { DocumentService } from '../document.service';
@@ -9,20 +9,23 @@ import { DocumentService } from '../document.service';
   templateUrl: './document-list.component.html',
   styleUrl: './document-list.component.css',
 })
-
 export class DocumentList implements OnInit {
   documents: Document[] = [];
   subscription!: Subscription;
 
-  constructor(private documentService: DocumentService) {
-    this.documents = this.documentService.getDocuments();
-  }
+  constructor(
+    private documentService: DocumentService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     this.subscription = this.documentService.documentListChangedEvent.subscribe(
       (documentsList: Document[]) => {
-        this.documents = documentsList;
+        this.documents = documentsList.slice();
+        this.cdr.detectChanges();
       }
     );
+
+    this.documentService.getDocuments();
   }
 }
