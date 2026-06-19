@@ -1,7 +1,7 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { Message } from './message.model';
-import { MOCKMESSAGES } from './MOCKMESSAGES';
+import { HttpClient } from '@angular/common/http';
 
+import { Message } from './message.model';
 @Injectable({
   providedIn: 'root',
 })
@@ -11,12 +11,19 @@ export class MessageService {
 
   messages: Message[] = [];
 
-  constructor() {
-    this.messages = MOCKMESSAGES;
-  }
+  constructor(private http: HttpClient) {}
 
-  getMessages(): Message[] {
-    return this.messages.slice();
+
+  getMessages() {
+    this.http
+      .get<Message[]>(
+        'https://byui-wdd430-cms-default-rtdb.firebaseio.com/messages.json'
+      )
+      .subscribe((messages: Message[]) => {
+        console.log('Messages from Firebase:', messages);
+        this.messages = messages || [];
+        this.messageChangedEvent.emit(this.messages.slice());
+      });
   }
 
   getMessage(id: string): Message | null {
@@ -28,7 +35,7 @@ export class MessageService {
     return null;
   }
 
-    addMessage(message: Message) {
+  addMessage(message: Message) {
     this.messages.push(message);
 
     this.messageChangedEvent.emit(this.messages.slice());
