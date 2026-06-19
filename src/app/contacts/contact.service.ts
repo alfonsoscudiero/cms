@@ -55,6 +55,28 @@ export class ContactService {
     return maxId;
   }
 
+  storeContacts() {
+    const contacts = JSON.stringify(this.contacts);
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+
+    this.http
+      .put(
+        'https://byui-wdd430-cms-default-rtdb.firebaseio.com/contacts.json',
+        contacts,
+        { headers: headers }
+      )
+      .subscribe({
+        next: () => {
+          this.contactListChangedEvent.next(this.contacts.slice());
+        },
+        error: (error) => {
+          console.log(error);
+        },
+      });
+  }
 
   addContact(newContact: Contact) {
     if (!newContact) {
@@ -68,7 +90,7 @@ export class ContactService {
     this.contacts.push(newContact);
 
     const contactsListClone = this.contacts.slice();
-
+    this.storeContacts();
     this.contactListChangedEvent.next(contactsListClone);
   }
 
@@ -86,7 +108,7 @@ export class ContactService {
     newContact.id = originalContact.id;
 
     this.contacts[pos] = newContact;
-
+    this.storeContacts();
     const contactsListClone = this.contacts.slice();
     this.contactListChangedEvent.next(contactsListClone);
   }
@@ -105,6 +127,7 @@ export class ContactService {
     this.contacts.splice(pos, 1);
 
     const contactsListClone = this.contacts.slice();
+    this.storeContacts();
     this.contactListChangedEvent.next(contactsListClone);
   }
 
