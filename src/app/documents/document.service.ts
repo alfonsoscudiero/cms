@@ -3,7 +3,6 @@ import { Subject } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Document } from './document.model';
-// import { MOCKDOCUMENTS } from './MOCKDOCUMENTS';
 
 @Injectable({
   providedIn: 'root',
@@ -70,7 +69,31 @@ export class DocumentService {
     return maxId;
   }
 
-  addDocument(newDocument: Document) {
+  
+  storeDocuments() {
+    const documentsJson = JSON.stringify(this.documents);
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+
+    this.http
+      .put(
+        'https://byui-wdd430-cms-default-rtdb.firebaseio.com/documents.json',
+        documentsJson,
+        { headers: headers }
+      )
+      .subscribe({
+        next: () => {
+          this.documentListChangedEvent.next(this.documents.slice());
+        },
+        error: (error: any) => {
+          console.log('Error saving documents:', error);
+        },
+      });
+  }
+
+    addDocument(newDocument: Document) {
     if (!newDocument) {
       return;
     }
@@ -80,8 +103,7 @@ export class DocumentService {
 
     this.documents.push(newDocument);
 
-    const documentsListClone = this.documents.slice();
-    this.documentListChangedEvent.next(documentsListClone);
+    this.storeDocuments();
   }
 
   updateDocument(originalDocument: Document, newDocument: Document) {
@@ -99,8 +121,7 @@ export class DocumentService {
 
     this.documents[pos] = newDocument;
 
-        const documentsListClone = this.documents.slice();
-    this.documentListChangedEvent.next(documentsListClone);
+    this.storeDocuments();
   }
 
   deleteDocument(document: Document) {
@@ -116,7 +137,6 @@ export class DocumentService {
 
     this.documents.splice(pos, 1);
 
-        const documentsListClone = this.documents.slice();
-    this.documentListChangedEvent.next(documentsListClone);
+    this.storeDocuments();
   }
 }
