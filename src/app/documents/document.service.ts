@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Document } from './document.model';
-import { MOCKDOCUMENTS } from './MOCKDOCUMENTS';
+// import { MOCKDOCUMENTS } from './MOCKDOCUMENTS';
 
 @Injectable({
   providedIn: 'root',
@@ -12,12 +12,9 @@ import { MOCKDOCUMENTS } from './MOCKDOCUMENTS';
 export class DocumentService {
   documentListChangedEvent = new Subject<Document[]>();
   documents: Document[] = [];
-  maxDocumentId: number;
+  maxDocumentId!: number;
 
-  constructor(private http: HttpClient) {
-      this.documents = MOCKDOCUMENTS;
-      this.maxDocumentId = this.getMaxId();
-    }
+  constructor(private http: HttpClient) {}
 
   getDocuments(): Document[] {
     this.http
@@ -26,6 +23,7 @@ export class DocumentService {
       )
       .subscribe({
         next: (documents: Document[]) => {
+          console.log('Firebase array:',documents);
           this.documents = documents || [];
           this.maxDocumentId = this.getMaxId();
 
