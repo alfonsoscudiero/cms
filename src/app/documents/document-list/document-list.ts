@@ -21,6 +21,8 @@ export class DocumentList implements OnInit {
   ngOnInit() {
     this.subscription = this.documentService.documentListChangedEvent.subscribe(
       (documentsList: Document[]) => {
+        console.log('Documents received:', documentsList);
+
         this.documents = documentsList.slice();
         this.cdr.detectChanges();
       }

@@ -22,7 +22,7 @@ export class DocumentService {
       )
       .subscribe({
         next: (documents: Document[]) => {
-          console.log('Firebase array:',documents);
+          console.log('Firebase documents:',documents);
           this.documents = documents || [];
           this.maxDocumentId = this.getMaxId();
 

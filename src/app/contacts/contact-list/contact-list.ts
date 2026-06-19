@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef  } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { Contact } from '../contact.model';
@@ -15,16 +15,23 @@ export class ContactList implements OnInit {
   subscription!: Subscription;
   term: string = '';
 
-  constructor(private contactService: ContactService) {
-    this.contacts = this.contactService.getContacts();
-  }
+  constructor(
+    private contactService: ContactService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
   ngOnInit() {
     this.subscription =
       this.contactService.contactListChangedEvent.subscribe(
         (contactsList: Contact[]) => {
-          this.contacts = contactsList;
+          console.log('Contacts received:', contactsList);
+
+          this.contacts = contactsList.slice();
+          this.cdr.detectChanges();
         }
       );
+
+    this.contactService.getContacts();
   }
 
   search(value: string) {

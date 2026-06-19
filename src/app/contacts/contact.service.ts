@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { Contact } from './contact.model';
-import { MOCKCONTACTS } from './MOCKCONTACTS';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
+import { Contact } from './contact.model';
 @Injectable({
   providedIn: 'root',
 })
@@ -10,14 +10,25 @@ import { MOCKCONTACTS } from './MOCKCONTACTS';
 export class ContactService {
   contactListChangedEvent = new Subject<Contact[]>();
   contacts: Contact[] = [];
-  maxContactId: number;
+  maxContactId!: number;
 
-  constructor() {
-    this.contacts = MOCKCONTACTS;
-    this.maxContactId = this.getMaxId();
-  }
+  constructor(private http: HttpClient) {}
 
   getContacts(): Contact[] {
+    this.http
+      .get<Contact[]>('https://byui-wdd430-cms-default-rtdb.firebaseio.com/contacts.json')
+      .subscribe({
+        next: (contacts: Contact[]) => {
+          console.log('Firebase contacts:', contacts);
+          this.contacts = contacts || [];
+          this.maxContactId = this.getMaxId();
+          this.contactListChangedEvent.next(this.contacts.slice());
+        },
+        error: (error) => {
+          console.log(error);
+        },
+      });
+
     return this.contacts.slice();
   }
 
@@ -43,6 +54,7 @@ export class ContactService {
 
     return maxId;
   }
+
 
   addContact(newContact: Contact) {
     if (!newContact) {
@@ -76,7 +88,6 @@ export class ContactService {
     this.contacts[pos] = newContact;
 
     const contactsListClone = this.contacts.slice();
-
     this.contactListChangedEvent.next(contactsListClone);
   }
 
@@ -94,7 +105,6 @@ export class ContactService {
     this.contacts.splice(pos, 1);
 
     const contactsListClone = this.contacts.slice();
-
     this.contactListChangedEvent.next(contactsListClone);
   }
 
