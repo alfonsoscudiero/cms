@@ -10,7 +10,7 @@ import { ContactService } from '../../contacts/contact.service';
   styleUrl: './message-item.css',
 })
 
-export class MessageItem {
+export class MessageItem implements OnInit {
   @Input() message!: Message;
 
   messageSender!: string;
