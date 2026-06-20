@@ -21,13 +21,14 @@ export class MessageEdit {
     const msgText = this.msgTextInput.nativeElement.value;
 
     const newMessage = new Message(
-      '1',
+      '',
       subject,
       msgText,
       this.currentSender
     );
 
     this.messageService.addMessage(newMessage);
+    this.onClear();
   }
 
   onClear() {
