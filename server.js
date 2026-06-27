@@ -10,6 +10,10 @@ var logger = require('morgan');
 var index = require('./server/routes/app');
 
 // ... ADD CODE TO IMPORT YOUR ROUTING FILES HERE ... 
+// Import routing files
+const messageRoutes = require('./server/routes/messages');
+const contactRoutes = require('./server/routes/contacts');
+const documentsRoutes = require('./server/routes/documents');
 
 var app = express(); // create an instance of express
 
@@ -44,6 +48,9 @@ app.use(express.static(path.join(__dirname, 'dist/cms/browser')));
 app.use('/', index);
 
 // ... ADD YOUR CODE TO MAP YOUR URL'S TO ROUTING FILES HERE ...
+app.use('/messages', messageRoutes);
+app.use('/contacts', contactRoutes);
+app.use('/documents', documentsRoutes);
 
 // Tell express to map all other non-defined routes back to the index page
 app.use((req, res) => {
