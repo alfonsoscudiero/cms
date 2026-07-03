@@ -3,28 +3,28 @@ import { Subject } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Contact } from './contact.model';
+
 @Injectable({
   providedIn: 'root',
 })
-
 export class ContactService {
   contactListChangedEvent = new Subject<Contact[]>();
+
   contacts: Contact[] = [];
-  maxContactId!: number;
+
+  private url = 'http://localhost:3000/contacts';
 
   constructor(private http: HttpClient) {}
 
   getContacts(): Contact[] {
     this.http
-      .get<Contact[]>('https://byui-wdd430-cms-default-rtdb.firebaseio.com/contacts.json')
+      .get<{ message: string; contacts: Contact[] }>(this.url)
       .subscribe({
-        next: (contacts: Contact[]) => {
-          console.log('Firebase contacts:', contacts);
-          this.contacts = contacts || [];
-          this.maxContactId = this.getMaxId();
+        next: (responseData) => {
+          this.contacts = responseData.contacts || [];
           this.contactListChangedEvent.next(this.contacts.slice());
         },
-        error: (error) => {
+        error: (error: any) => {
           console.log(error);
         },
       });
@@ -33,65 +33,36 @@ export class ContactService {
   }
 
   getContact(id: string): Contact | null {
-    for (const contact of this.contacts) {
-      if (contact.id === id) {
-        return contact;
-      }
+    return this.contacts.find(contact => contact.id === id) || null;
+  }
+
+  addContact(contact: Contact) {
+    if (!contact) {
+      return;
     }
-    return null;
-  }
 
-  getMaxId(): number {
-    let maxId = 0;
-
-    for (const contact of this.contacts) {
-      const currentId = parseInt(contact.id);
-
-      if (currentId > maxId) {
-        maxId = currentId;
-      }
-  }
-
-    return maxId;
-  }
-
-  storeContacts() {
-    const contacts = JSON.stringify(this.contacts);
+    // Let Express generate the id
+    contact.id = '';
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
     });
 
     this.http
-      .put(
-        'https://byui-wdd430-cms-default-rtdb.firebaseio.com/contacts.json',
-        contacts,
+      .post<{ message: string; contact: Contact }>(
+        this.url,
+        contact,
         { headers: headers }
       )
       .subscribe({
-        next: () => {
+        next: (responseData) => {
+          this.contacts.push(responseData.contact);
           this.contactListChangedEvent.next(this.contacts.slice());
         },
-        error: (error) => {
+        error: (error: any) => {
           console.log(error);
         },
       });
-  }
-
-  addContact(newContact: Contact) {
-    if (!newContact) {
-      return;
-    }
-
-    this.maxContactId++;
-
-    newContact.id = this.maxContactId.toString();
-
-    this.contacts.push(newContact);
-
-    const contactsListClone = this.contacts.slice();
-    this.storeContacts();
-    this.contactListChangedEvent.next(contactsListClone);
   }
 
   updateContact(originalContact: Contact, newContact: Contact) {
@@ -99,7 +70,9 @@ export class ContactService {
       return;
     }
 
-    const pos = this.contacts.indexOf(originalContact);
+    const pos = this.contacts.findIndex(
+      contact => contact.id === originalContact.id
+    );
 
     if (pos < 0) {
       return;
@@ -107,10 +80,25 @@ export class ContactService {
 
     newContact.id = originalContact.id;
 
-    this.contacts[pos] = newContact;
-    this.storeContacts();
-    const contactsListClone = this.contacts.slice();
-    this.contactListChangedEvent.next(contactsListClone);
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+
+    this.http
+      .put(
+        this.url + '/' + originalContact.id,
+        newContact,
+        { headers: headers }
+      )
+      .subscribe({
+        next: () => {
+          this.contacts[pos] = newContact;
+          this.contactListChangedEvent.next(this.contacts.slice());
+        },
+        error: (error: any) => {
+          console.log(error);
+        },
+      });
   }
 
   deleteContact(contact: Contact) {
@@ -118,17 +106,24 @@ export class ContactService {
       return;
     }
 
-    const pos = this.contacts.indexOf(contact);
+    const pos = this.contacts.findIndex(
+      c => c.id === contact.id
+    );
 
     if (pos < 0) {
       return;
     }
 
-    this.contacts.splice(pos, 1);
-
-    const contactsListClone = this.contacts.slice();
-    this.storeContacts();
-    this.contactListChangedEvent.next(contactsListClone);
+    this.http
+      .delete(this.url + '/' + contact.id)
+      .subscribe({
+        next: () => {
+          this.contacts.splice(pos, 1);
+          this.contactListChangedEvent.next(this.contacts.slice());
+        },
+        error: (error: any) => {
+          console.log(error);
+        },
+      });
   }
-
 }
